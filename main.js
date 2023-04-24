@@ -15,6 +15,11 @@ emptyCarButton = document.querySelector("#empty__cart")
 //?Necesito tener un array que reciba los elementos que debo introducir en el carrito de compras
 let carProducts = [];
 
+//*Modal
+const modalContainer = document.querySelector("#modal-container")
+const modalElement = document.querySelector("#modal");
+let modalDetails = [];
+
 //*Logica para mostrar y ocultar el carrito
 
 carToggle.addEventListener('click', () => {
@@ -38,6 +43,14 @@ function eventListenersLoader(){
         carProducts = JSON.parse(localStorage.getItem("cart")) || [];
         carElementsHTML();
     })
+
+    //*cuando se presione el boton "view details"
+
+    productsList.addEventListener("click", modalProduct )
+
+    //*cuando se de click al boton para cerrar modal
+
+    modalContainer.addEventListener("click", closeModal);
 }
 
 function getProducts() {
@@ -155,10 +168,12 @@ function carElementsHTML(){
     })
     productStorage()
 }
+
 //*LocalStorage
 function productStorage() { 
     localStorage.setItem("cart", JSON.stringify(carProducts))
 }
+
 //*Eliminar productos del carrito
 
 function deleteProduct(event) {
@@ -175,4 +190,29 @@ function emptyCar() {
     carElementsHTML()
 }
 
+//*Ventana modal
+function modalProduct(event){
+    if(event.target.classList.contains("product__details")){
+    modalContainer.classList.add("show__modal")
+    const product = event.target.parentElement.parentElement
+    modalDetailsElement(product)
+    }
+}
+function closeModal(event) {
+    if(event.target.classList.contains("icon__modal")) {
+        modalContainer.classList.remove("show__modal")
+        modalElement.innerHTML = "";
+        modalDetails = []
+    }
+}
+
+function modalDetailsElement(product) {
+    const infoDetails = [{
+        id: product.querySelector("button").getAttribute("data-id"),
+        image: product.querySelector("img").src,
+        name: product.querySelector(".product__container__name p").textContent,
+        price: product.querySelector(".product__container__price p").textContent,
+    }]
+    modalDetails = [...infoDetails]
+}
 
